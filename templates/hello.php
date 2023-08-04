@@ -1,1 +1,4 @@
 Hello <?=$name?>!
+
+<?= $user->role ?>
+
