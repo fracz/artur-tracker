@@ -29,8 +29,8 @@ $app->add(new Tuupola\Middleware\HttpBasicAuthentication([
     }
 ]));
 
-$app->get('/hello/{name}', function (Request $request, Response $response, $args) use ($view) {
-    return $view->render($response, 'hello.php', $args);
+$app->get('/', function (Request $request, Response $response, $args) use ($view) {
+    return $view->render($response, 'form.php', $args);
 });
 
 $app->run();
