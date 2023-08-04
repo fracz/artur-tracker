@@ -40,14 +40,22 @@
             <dd>
                 <?php
                 $p = \App\Db::findOne('user', 'id = ?', [$model->assigned_p]);
-                echo $p ? $p->username : '-';
+                if ($p) {
+                    echo $p . ' (' . $model->assigned_p_on . ')';
+                } else {
+                    echo '-';
+                }
                 ?>
             </dd>
             <dt class="mt-3">Technik</dt>
             <dd>
                 <?php
                 $p = \App\Db::findOne('user', 'id = ?', [$model->assigned_t]);
-                echo $p ? $p->username : '-';
+                if ($p) {
+                    echo $p->username . ' (' . $model->assigned_t_on . ')';
+                } else {
+                    echo '-';
+                }
                 ?>
             </dd>
             <dt class="mt-3">Kontrola jakości</dt>

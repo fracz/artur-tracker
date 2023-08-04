@@ -53,14 +53,14 @@ $app->post('/confirm', function (Request $request, Response $response, $args) us
             $repair = \App\Db::dispense('repair');
             $repair->nrNaprawy = $body['nrNaprawy'];
             $repair->idPrzyjmujacego = $body['idPrzyjmujacego'];
-            $repair->dataPrzyjecia = $body['dataPrzyjecia'];
+            $repair->dataPrzyjecia = new \DateTime('@' . strtotime($body['dataPrzyjecia']));
             $repair->model = $body['model'];
             $repair->sn = $body['sn'];
-            $repair->assigned_p = null;
-            $repair->assigned_t = null;
-            $repair->assigned_k = null;
+            $repair->createdAt = new \DateTime();
         }
-        $repair['assigned_' . $request->getAttribute('user')->role] = $request->getAttribute('user')->id;
+        $role = $request->getAttribute('user')->role;
+        $repair["assigned_{$role}"] = $request->getAttribute('user');
+        $repair["assigned_{$role}_on"] = new \DateTime();
         \App\Db::store($repair);
         return $response->withHeader('Location', '/')->withStatus(302);
     } else {
