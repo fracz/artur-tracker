@@ -1,6 +1,13 @@
 {
-    "require": {
-        "slim/slim": "4.*",
-        "slim/psr7": "^1.6"
-    }
+  "require": {
+    "slim/php-view": "^3.2",
+    "slim/psr7": "^1.6",
+    "slim/slim": "^4.12"
+  },
+  "config": {
+    "platform": {
+      "php": "7.4.4"
+    },
+    "sort-packages": true
+  }
 }
