@@ -2,7 +2,7 @@
     <?php if ($user->role !== 'a'): ?>
         <form action="/confirm" method="post" id="app">
             <div class="field">
-                <label class="label">Magiczny identyfikator {{ message }}</label>
+                <label class="label">Magiczny identyfikator</label>
                 <div class="control">
                     <input class="input is-large" type="text" placeholder="Base54" v-model="b64id">
                 </div>
