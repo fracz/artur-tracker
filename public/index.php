@@ -33,4 +33,42 @@ $app->get('/', function (Request $request, Response $response, $args) use ($view
     return $view->render($response, 'form.php', $args);
 });
 
+$app->get('/logout', function (Request $request, Response $response) use ($view) {
+    $view->addAttribute('user', null);
+    return $view->render($response->withStatus(401), 'logout.php');
+});
+
+$app->post('/confirm', function (Request $request, Response $response, $args) use ($view) {
+    $body = $request->getParsedBody();
+    \Assert\Assertion::isArray($body);
+    \Assert\Assert::that($body)
+        ->keyExists('nrNaprawy')
+        ->keyExists('idPrzyjmujacego')
+        ->keyExists('dataPrzyjecia')
+        ->keyExists('model')
+        ->keyExists('sn');
+    $repair = \App\Db::findOne('repair', 'nr_naprawy = ?', [$body['nrNaprawy']]);
+    if ($body['confirm'] ?? false) {
+        if (!$repair) {
+            $repair = \App\Db::dispense('repair');
+            $repair->nrNaprawy = $body['nrNaprawy'];
+            $repair->idPrzyjmujacego = $body['idPrzyjmujacego'];
+            $repair->dataPrzyjecia = $body['dataPrzyjecia'];
+            $repair->model = $body['model'];
+            $repair->sn = $body['sn'];
+            $repair->assigned_p = null;
+            $repair->assigned_t = null;
+            $repair->assigned_k = null;
+        }
+        $repair['assigned_' . $request->getAttribute('user')->role] = $request->getAttribute('user')->id;
+        \App\Db::store($repair);
+        return $response->withHeader('Location', '/')->withStatus(302);
+    } else {
+        return $view->render($response, 'confirm.php', [
+            'params' => $body,
+            'model' => $repair,
+        ]);
+    }
+});
+
 $app->run();

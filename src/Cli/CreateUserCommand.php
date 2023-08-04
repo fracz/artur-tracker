@@ -43,6 +43,7 @@ class CreateUserCommand extends Command
         $user->password = password_hash($password, PASSWORD_BCRYPT);
         $user->role = $role;
         Db::store($user);
+        $io->success('User created.');
         return self::SUCCESS;
     }
 }
