@@ -51,7 +51,9 @@ $app->post('/confirm', function (Request $request, Response $response, $args) us
         ->keyExists('model')
         ->keyExists('sn');
     $repair = \App\Db::findOne('repair', 'nr_naprawy = ?', [$body['nrNaprawy']]);
-    if ($body['confirm'] ?? false) {
+    $role = $request->getAttribute('user')->role;
+    $confirmed = ($body['confirm'] ?? false) || !!$repair;
+    if ($confirmed && !$repair["assigned_{$role}"]) {
         if (!$repair) {
             $repair = \App\Db::dispense('repair');
             $repair->nrNaprawy = $body['nrNaprawy'];
@@ -61,7 +63,6 @@ $app->post('/confirm', function (Request $request, Response $response, $args) us
             $repair->sn = $body['sn'];
             $repair->createdAt = new \DateTime('now', $timezone);
         }
-        $role = $request->getAttribute('user')->role;
         $repair["assigned_{$role}"] = $request->getAttribute('user');
         $repair["assigned_{$role}_on"] = new \DateTime('now', $timezone);
         $repair->lastChangeOn = new \DateTime('now', $timezone);

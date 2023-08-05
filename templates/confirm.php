@@ -39,9 +39,8 @@
             <dt class="mt-3">Przyjmujący</dt>
             <dd>
                 <?php
-                $p = \App\Db::findOne('user', 'id = ?', [$model->assigned_p]);
-                if ($p) {
-                    echo $p . ' (' . $model->assigned_p_on . ')';
+                if ($model->assigned_p) {
+                    echo $model->assigned_p->username . ' (' . $model->assigned_p_on . ')';
                 } else {
                     echo '-';
                 }
@@ -50,9 +49,8 @@
             <dt class="mt-3">Technik</dt>
             <dd>
                 <?php
-                $p = \App\Db::findOne('user', 'id = ?', [$model->assigned_t]);
-                if ($p) {
-                    echo $p->username . ' (' . $model->assigned_t_on . ')';
+                if ($model->assigned_t) {
+                    echo $model->assigned_t->username . ' (' . $model->assigned_t_on . ')';
                 } else {
                     echo '-';
                 }
@@ -61,8 +59,11 @@
             <dt class="mt-3">Kontrola jakości</dt>
             <dd>
                 <?php
-                $p = \App\Db::findOne('user', 'id = ?', [$model->assigned_k]);
-                echo $p ? $p->username : '-';
+                if ($model->assigned_k) {
+                    echo $model->assigned_k->username . ' (' . $model->assigned_k_on . ')';
+                } else {
+                    echo '-';
+                }
                 ?>
             </dd>
         <?php endif; ?>
