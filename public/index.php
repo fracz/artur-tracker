@@ -95,7 +95,7 @@ $app->get('/list', function (Request $request, Response $response) use ($timezon
     $args['from'] = $dateFrom->format('Y-m-d');
     $args['to'] = $dateTo->format('Y-m-d');
     if ($params['finished']) {
-        $where[] = 'assigned_p IS NOT NULL AND assigned_t IS NOT NULL AND assigned_k IS NOT NULL';
+        $where[] = 'assigned_p_id IS NOT NULL AND assigned_t_id IS NOT NULL AND assigned_k_id IS NOT NULL';
     }
     $repairs = \App\Db::getAll('SELECT * FROM repair WHERE ' . implode(' AND ', $where), $args);
     $repairs = \App\Db::convertToBeans('repair', $repairs);
