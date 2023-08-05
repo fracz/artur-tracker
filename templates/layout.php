@@ -47,6 +47,18 @@
     </nav>
 <?php endif; ?>
 <section class="section">
+    <?php foreach ($flash->getMessages() as $type => $messages): ?>
+        <div class="container mb-5">
+            <div class="message is-<?= $type ?>">
+                <div class="message-body">
+                    <?php foreach ($messages as $message): ?>
+                        <?= $message ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
     <?= $content ?>
 </section>
 

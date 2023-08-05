@@ -3,6 +3,7 @@
     "ext-sqlite3": "*",
     "beberlei/assert": "^3.3",
     "gabordemooij/redbean": "^5.7",
+    "slim/flash": "^0.4.0",
     "slim/php-view": "^3.2",
     "slim/psr7": "^1.6",
     "slim/slim": "^4.12",

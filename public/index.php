@@ -7,32 +7,22 @@ use Slim\Views\PhpRenderer;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+session_start();
+
 $app = AppFactory::create();
 $app->addRoutingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $timezone = new \DateTimeZone('Europe/Warsaw');
 date_default_timezone_set('Europe/Warsaw');
 
-$users = \App\Db::find('user');
-$users = array_combine(
-    array_map(fn($user) => $user->username, $users),
-    array_map(fn($user) => $user->password, $users)
-);
-
 $view = new PhpRenderer(__DIR__ . '/../templates');
+$flash = new \Slim\Flash\Messages();
 $view->setLayout('layout.php');
+$view->addAttribute('flash', $flash);
 
-$app->add(new Tuupola\Middleware\HttpBasicAuthentication([
-    "users" => $users,
-    "secure" => false,
-    "before" => function ($request, $arguments) use ($view) {
-        $user = \App\Db::findOne('user', 'username = ?', [$arguments['user']]);
-        $view->addAttribute('user', $user);
-        return $request->withAttribute("user", $user);
-    }
-]));
+require __DIR__ . '/../src/middleware.php';
 
-$app->get('/', function (Request $request, Response $response, $args) use ($view) {
+$app->get('/', function (Request $request, Response $response, $args) use ($flash, $view) {
     return $view->render($response, 'form.php', $args);
 });
 
@@ -41,7 +31,7 @@ $app->get('/logout', function (Request $request, Response $response) use ($view)
     return $view->render($response->withStatus(401), 'logout.php');
 });
 
-$app->post('/confirm', function (Request $request, Response $response, $args) use ($timezone, $view) {
+$app->post('/confirm', function (Request $request, Response $response, $args) use ($flash, $timezone, $view) {
     $body = $request->getParsedBody();
     \Assert\Assertion::isArray($body);
     \Assert\Assert::that($body)
@@ -67,6 +57,7 @@ $app->post('/confirm', function (Request $request, Response $response, $args) us
         $repair["assigned_{$role}_on"] = new \DateTime('now', $timezone);
         $repair->lastChangeOn = new \DateTime('now', $timezone);
         \App\Db::store($repair);
+        $flash->addMessage('success', 'Naprawa została zapisana.');
         return $response->withHeader('Location', '/')->withStatus(302);
     } else {
         return $view->render($response, 'confirm.php', [
