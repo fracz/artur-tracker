@@ -24,6 +24,7 @@ $view->setLayout('layout.php');
 
 $app->add(new Tuupola\Middleware\HttpBasicAuthentication([
     "users" => $users,
+    "secure" => false,
     "before" => function ($request, $arguments) use ($view) {
         $user = \App\Db::findOne('user', 'username = ?', [$arguments['user']]);
         $view->addAttribute('user', $user);
