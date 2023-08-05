@@ -15,6 +15,13 @@ php -r "unlink('composer-setup.php');"
 php composer.phar install
 ```
 
+## Aktualizacja
+
+```
+git pull
+php composer.phar install
+```
+
 ## Uruchomienie
 
 ### Lokalnie
